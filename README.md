@@ -6,6 +6,9 @@
 
 Observer Discord Botは、自然な会話と高度なツール連携を提供する多機能なAIチャットボットです。このボットは、OpenAIのGPTモデルをベースにしており、ユーザーとの対話を通じて様々なタスクを実行します。
 
+Observerちゃんは今後更新はないです。
+[Nelfie](https://github.com/371tti/Nelfie)が後継プロジェクトとなります。
+
 ## ToDo
 - 初期実装
   - [x] Discordとの連携
