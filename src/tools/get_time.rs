@@ -1,9 +1,10 @@
 
-use call_agent::chat::function::Tool;
 use chrono::{DateTime, Utc};
 use chrono_tz::Tz;
 use log::info;
 use std::collections::HashMap;
+
+use crate::{context::ObserverContext, lmclient::LMTool};
 
 pub struct GetTime {}
 
@@ -96,33 +97,34 @@ impl GetTime {
     }
 }
 
-impl Tool for GetTime {
-    fn def_name(&self) -> &str {
-        "get_location_time"
+#[async_trait::async_trait]
+impl LMTool for GetTime {
+    fn name(&self) -> String {
+        "get-location-time".to_string()
     }
 
-    fn def_description(&self) -> &str {
-        "Get the current time of the location based on the country code"
+    fn description(&self) -> String {
+        "Get the current time of the location based on the country code".to_string()
     }
 
-    fn def_parameters(&self) -> serde_json::Value {
+    fn json_schema(&self) -> serde_json::Value {
         serde_json::json!({
             "type": "object",
             "properties": {
                 "country_code": {
                     "type": "string",
                     "description": "ISO 3166-1 alpha-2 country code (e.g., 'US', 'JP', 'FR')"
+                },
+                "$explain": {
+                    "type": "string",
+                    "description": "A brief explanation of what you are doing with this tool."
                 }
-            },
-            "$explain": {
-                "type": "string",
-                "description": "A brief explanation of what you are doing with this tool."
             },
             "required": ["country_code"]
         })
     }
 
-    fn run(&self, args: serde_json::Value) -> Result<String, String> {
+    async fn execute(&self, args: serde_json::Value, _ob_ctx: ObserverContext) -> Result<String, String> {
         info!("GetTime::run called with args: {:?}", args);
         let country_code = args.get("country_code")
             .and_then(|v| v.as_str())
